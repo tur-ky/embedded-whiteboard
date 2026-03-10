@@ -1,40 +1,39 @@
 # Embedded Whiteboard
 
-An Obsidian plugin that embeds a canvas-style whiteboard directly inside a Markdown note.
+An Obsidian plugin that embeds a drawing-first whiteboard directly inside a Markdown note.
+
+## Current direction
+
+This build is aimed at a Concepts-style workflow: an infinite canvas with tool-driven drawing instead of node cards.
+
+## Included tools
+
+- Pen
+- Pencil
+- Marker
+- Eraser
+- Text
+- Select / move
+- Hand / pan
+- Zoom with the mouse wheel
+- Layers with visibility and lock toggles
+- Undo / redo
 
 ## How it works
 
 - Whiteboards live in fenced code blocks named `inline-whiteboard`.
-- In reading mode and the editor, those blocks are replaced with an interactive canvas.
-- The canvas stores cards, links, positions, sizes, and viewport state back into the note as JSON.
+- In reading mode and the editor, those blocks are replaced with an interactive drawing canvas.
+- The canvas stores layers, strokes, text items, and viewport state back into the note as JSON.
 
-## Features
+## Commands
 
-- Drag, resize, recolor, duplicate, and delete cards
-- Double-click cards to edit Markdown content
-- Link cards together with a dedicated toolbar action
-- Pan and zoom inside the embedded board
-- Insert a new board from the command palette with `Insert embedded whiteboard`
-
-## Example block
-
-````markdown
-```inline-whiteboard
-{
-  "nodes": [],
-  "edges": [],
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  }
-}
-```
-````
+- `Insert embedded whiteboard`
+- `Append embedded whiteboard to current note`
 
 ## Build
 
 ```bash
 npm install
 npm run build
+npm run package-release
 ```

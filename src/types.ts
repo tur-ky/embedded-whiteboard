@@ -1,4 +1,5 @@
-export type EdgeSide = "top" | "right" | "bottom" | "left";
+export type DrawingTool = "pen" | "pencil" | "marker";
+export type WhiteboardTool = DrawingTool | "eraser" | "text" | "select" | "hand";
 
 export interface WhiteboardViewport {
   x: number;
@@ -6,28 +7,45 @@ export interface WhiteboardViewport {
   zoom: number;
 }
 
-export interface WhiteboardNode {
+export interface WhiteboardLayer {
   id: string;
-  type: "text";
-  text: string;
-  color: string;
+  name: string;
+  visible: boolean;
+  locked: boolean;
+}
+
+export interface StrokePoint {
   x: number;
   y: number;
-  width: number;
-  height: number;
+  pressure: number;
 }
 
-export interface WhiteboardEdge {
+export interface StrokeItem {
   id: string;
-  fromNode: string;
-  toNode: string;
-  fromSide: EdgeSide;
-  toSide: EdgeSide;
-  label?: string;
+  type: "stroke";
+  layerId: string;
+  tool: DrawingTool;
+  color: string;
+  width: number;
+  opacity: number;
+  points: StrokePoint[];
 }
+
+export interface TextItem {
+  id: string;
+  type: "text";
+  layerId: string;
+  x: number;
+  y: number;
+  text: string;
+  color: string;
+  size: number;
+}
+
+export type WhiteboardItem = StrokeItem | TextItem;
 
 export interface EmbeddedWhiteboardData {
-  nodes: WhiteboardNode[];
-  edges: WhiteboardEdge[];
+  layers: WhiteboardLayer[];
+  items: WhiteboardItem[];
   viewport: WhiteboardViewport;
 }
