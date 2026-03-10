@@ -622,14 +622,17 @@ export function mountWhiteboard(
     }
 
     if (activeTool === "text") {
+      pointerMode = { type: "idle" };
       if (targetedItem?.type === "text") {
         selectedItemId = targetedItem.id;
+        renderBoard();
         openTextEditor({ x: targetedItem.x, y: targetedItem.y }, targetedItem);
       } else {
         selectedItemId = null;
+        renderBoard();
         openTextEditor(point);
       }
-      renderBoard();
+      updateStatus("Editing text");
       return;
     }
 
@@ -810,4 +813,5 @@ function distanceToSegment(
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
+
 
