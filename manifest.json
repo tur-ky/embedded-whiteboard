@@ -1,13 +1,14 @@
 {
   "id": "embedded-whiteboard",
   "name": "Embedded Whiteboard",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "minAppVersion": "1.5.0",
   "description": "Embeds a canvas-style whiteboard directly inside Markdown notes.",
   "author": "OpenAI Codex",
   "authorUrl": "https://openai.com",
   "isDesktopOnly": false
 }
+
 
 
 

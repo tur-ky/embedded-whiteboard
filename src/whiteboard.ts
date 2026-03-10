@@ -64,12 +64,12 @@ export function mountWhiteboard(
   const workspace = root.createDiv({ cls: "embedded-whiteboard__workspace" });
   const viewport = workspace.createDiv({ cls: "embedded-whiteboard__viewport" });
   const grid = viewport.createDiv({ cls: "embedded-whiteboard__grid" });
-  const scene = viewport.createEl("svg", { cls: "embedded-whiteboard__scene" });
+  const scene = viewport.createSvg("svg", { cls: "embedded-whiteboard__scene" });
   scene.setAttribute("width", "100%");
   scene.setAttribute("height", "100%");
-  const strokeLayer = scene.createEl("g", { cls: "embedded-whiteboard__stroke-layer" });
-  const draftLayer = scene.createEl("g", { cls: "embedded-whiteboard__draft-layer" });
-  const draftPath = draftLayer.createEl("path", { cls: "embedded-whiteboard__draft-path" });
+  const strokeLayer = scene.createSvg("g", { cls: "embedded-whiteboard__stroke-layer" });
+  const draftLayer = scene.createSvg("g", { cls: "embedded-whiteboard__draft-layer" });
+  const draftPath = draftLayer.createSvg("path", { cls: "embedded-whiteboard__draft-path" });
   const textWorld = viewport.createDiv({ cls: "embedded-whiteboard__text-world" });
   const sidebar = workspace.createDiv({ cls: "embedded-whiteboard__sidebar" });
   const layerHeader = sidebar.createDiv({ cls: "embedded-whiteboard__sidebar-header" });
@@ -333,7 +333,7 @@ export function mountWhiteboard(
       }
 
       if (item.type === "stroke") {
-        const path = strokeLayer.createEl("path", { cls: "embedded-whiteboard__stroke" });
+        const path = strokeLayer.createSvg("path", { cls: "embedded-whiteboard__stroke" });
         path.setAttribute("d", pointsToPath(item.points));
         path.setAttribute("stroke", item.color);
         path.setAttribute("stroke-width", String(item.width));
@@ -793,5 +793,6 @@ function distanceToSegment(
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
+
 
 
