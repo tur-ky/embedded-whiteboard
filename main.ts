@@ -1,4 +1,5 @@
 import {
+  Editor,
   MarkdownView,
   Notice,
   Plugin,
@@ -39,10 +40,7 @@ export default class EmbeddedWhiteboardPlugin extends Plugin {
       id: "insert-embedded-whiteboard",
       name: "Insert embedded whiteboard",
       editorCallback: (editor) => {
-        const board = wrapBoard(createDefaultBoard());
-        const cursor = editor.getCursor();
-        const needsLeadingBreak = cursor.line > 0 ? "\n" : "";
-        editor.replaceRange(`${needsLeadingBreak}${board}\n`, cursor);
+        this.insertEmbeddedWhiteboard(editor);
       }
     });
 
@@ -62,6 +60,20 @@ export default class EmbeddedWhiteboardPlugin extends Plugin {
         return true;
       }
     });
+
+    this.registerEvent(
+      this.app.workspace.on("editor-menu", (menu, editor) => {
+        menu.addItem((item) => {
+          item
+            .setTitle("Embedded whiteboard")
+            .setIcon("layout-dashboard")
+            .setSection("insert")
+            .onClick(() => {
+              this.insertEmbeddedWhiteboard(editor);
+            });
+        });
+      })
+    );
   }
 
   private parseOrCreateBoard(source: string): EmbeddedWhiteboardData {
@@ -78,6 +90,13 @@ export default class EmbeddedWhiteboardPlugin extends Plugin {
     const suffix = content.endsWith("\n") ? "" : "\n";
     await this.app.vault.modify(file, `${content}${suffix}\n${wrapBoard(createDefaultBoard())}\n`);
     new Notice("Embedded whiteboard appended to the note");
+  }
+
+  private insertEmbeddedWhiteboard(editor: Editor): void {
+    const board = wrapBoard(createDefaultBoard());
+    const cursor = editor.getCursor();
+    const needsLeadingBreak = cursor.line > 0 ? "\n" : "";
+    editor.replaceRange(`${needsLeadingBreak}${board}\n`, cursor);
   }
 
   private async persistBlock(
