@@ -1,6 +1,6 @@
 {
   "name": "obsidian-embedded-whiteboard",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Obsidian plugin that embeds a canvas-like whiteboard directly in notes.",
   "main": "main.js",
   "scripts": {
@@ -17,10 +17,4 @@
     "typescript": "^5.8.2"
   }
 }
-
-
-
-
-
-
 

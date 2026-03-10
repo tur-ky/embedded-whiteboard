@@ -14,6 +14,14 @@ export interface WhiteboardLayer {
   locked: boolean;
 }
 
+export interface WhiteboardUiState {
+  activeTool: WhiteboardTool;
+  activeColor: string;
+  brushSize: number;
+  opacity: number;
+  activeLayerId?: string;
+}
+
 export interface StrokePoint {
   x: number;
   y: number;
@@ -49,4 +57,6 @@ export interface EmbeddedWhiteboardData {
   layers: WhiteboardLayer[];
   items: WhiteboardItem[];
   viewport: WhiteboardViewport;
+  ui: WhiteboardUiState;
 }
+

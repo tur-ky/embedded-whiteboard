@@ -87,11 +87,11 @@ export function mountWhiteboard(
     board = createDefaultBoard();
   }
 
-  let activeTool: WhiteboardTool = "pen";
-  let activeColor = DEFAULT_COLORS[0];
-  let brushSize = TOOL_PRESETS.pen.width;
-  let opacity = TOOL_PRESETS.pen.opacity;
-  let activeLayerId = board.layers[0].id;
+  let activeTool: WhiteboardTool = board.ui.activeTool;
+  let activeColor = board.ui.activeColor;
+  let brushSize = board.ui.brushSize;
+  let opacity = board.ui.opacity;
+  let activeLayerId = board.ui.activeLayerId ?? board.layers[0].id;
   let selectedItemId: string | null = null;
   let pointerMode: PointerMode = { type: "idle" };
   let draftStroke: StrokeItem | null = null;
@@ -130,6 +130,7 @@ export function mountWhiteboard(
     swatch.addEventListener("click", () => {
       activeColor = color;
       colorInput.value = color;
+      syncUiState();
       updateToolbar();
     });
   }
@@ -155,13 +156,24 @@ export function mountWhiteboard(
   addLayerButton.addEventListener("click", () => addLayer());
   colorInput.addEventListener("input", () => {
     activeColor = colorInput.value;
+    syncUiState();
   });
   sizeInput.addEventListener("input", () => {
     brushSize = Number(sizeInput.value);
+    syncUiState();
   });
   opacityInput.addEventListener("input", () => {
     opacity = Number(opacityInput.value);
+    syncUiState();
   });
+
+  function syncUiState(): void {
+    board.ui.activeTool = activeTool;
+    board.ui.activeColor = activeColor;
+    board.ui.brushSize = brushSize;
+    board.ui.opacity = opacity;
+    board.ui.activeLayerId = activeLayerId;
+  }
 
   function setActiveTool(tool: WhiteboardTool): void {
     activeTool = tool;
@@ -171,6 +183,7 @@ export function mountWhiteboard(
       sizeInput.value = String(brushSize);
       opacityInput.value = String(opacity);
     }
+    syncUiState();
     updateToolbar();
     updateStatus(`${TOOL_LABELS[tool]} ready`);
   }
@@ -309,6 +322,7 @@ export function mountWhiteboard(
       nameButton.type = "button";
       nameButton.addEventListener("click", () => {
         activeLayerId = layer.id;
+        syncUiState();
         renderLayers();
         updateStatus(`Active layer: ${layer.name}`);
       });
@@ -445,6 +459,7 @@ export function mountWhiteboard(
     };
     board.layers.push(layer);
     activeLayerId = layer.id;
+    syncUiState();
     renderLayers();
     pushHistory();
     queueSave();
@@ -712,7 +727,9 @@ export function mountWhiteboard(
     { passive: false }
   );
 
-  setActiveTool("pen");
+  syncUiState();
+  updateToolbar();
+  updateStatus(`${TOOL_LABELS[activeTool]} ready`);
   renderBoard();
 
   return {
@@ -793,6 +810,4 @@ function distanceToSegment(
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
-
-
 

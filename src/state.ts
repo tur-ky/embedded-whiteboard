@@ -4,7 +4,9 @@ import {
   StrokeItem,
   TextItem,
   WhiteboardItem,
-  WhiteboardLayer
+  WhiteboardLayer,
+  WhiteboardTool,
+  WhiteboardUiState
 } from "./types";
 
 export const WHITEBOARD_FENCE = "inline-whiteboard";
@@ -39,16 +41,28 @@ export function createLayer(name = "Layer 1"): WhiteboardLayer {
   };
 }
 
+export function createDefaultUiState(layerId?: string): WhiteboardUiState {
+  return {
+    activeTool: "pen",
+    activeColor: DEFAULT_COLORS[0],
+    brushSize: TOOL_PRESETS.pen.width,
+    opacity: TOOL_PRESETS.pen.opacity,
+    activeLayerId: layerId
+  };
+}
+
 export function createDefaultBoard(): EmbeddedWhiteboardData {
+  const layer = createLayer();
   return {
     id: createId("board"),
-    layers: [createLayer()],
+    layers: [layer],
     items: [],
     viewport: {
       x: 0,
       y: 0,
       zoom: 1
-    }
+    },
+    ui: createDefaultUiState(layer.id)
   };
 }
 
@@ -82,6 +96,8 @@ export function parseBoard(raw: string): EmbeddedWhiteboardData {
         .filter((item): item is WhiteboardItem => Boolean(item && layerIds.has(item.layerId)))
     : [];
 
+  const defaultUi = createDefaultUiState(safeLayers[0].id);
+
   return {
     id: typeof parsed.id === "string" ? parsed.id : createId("board"),
     layers: safeLayers,
@@ -90,6 +106,16 @@ export function parseBoard(raw: string): EmbeddedWhiteboardData {
       x: typeof parsed.viewport?.x === "number" ? parsed.viewport.x : 0,
       y: typeof parsed.viewport?.y === "number" ? parsed.viewport.y : 0,
       zoom: typeof parsed.viewport?.zoom === "number" ? parsed.viewport.zoom : 1
+    },
+    ui: {
+      activeTool: isWhiteboardTool(parsed.ui?.activeTool) ? parsed.ui.activeTool : defaultUi.activeTool,
+      activeColor: typeof parsed.ui?.activeColor === "string" ? parsed.ui.activeColor : defaultUi.activeColor,
+      brushSize: typeof parsed.ui?.brushSize === "number" ? parsed.ui.brushSize : defaultUi.brushSize,
+      opacity: typeof parsed.ui?.opacity === "number" ? parsed.ui.opacity : defaultUi.opacity,
+      activeLayerId:
+        typeof parsed.ui?.activeLayerId === "string" && layerIds.has(parsed.ui.activeLayerId)
+          ? parsed.ui.activeLayerId
+          : defaultUi.activeLayerId
     }
   };
 }
@@ -100,6 +126,10 @@ export function serializeBoard(board: EmbeddedWhiteboardData): string {
 
 export function wrapBoard(board: EmbeddedWhiteboardData): string {
   return `\`\`\`${WHITEBOARD_FENCE}\n${serializeBoard(board)}\n\`\`\``;
+}
+
+function isWhiteboardTool(value: unknown): value is WhiteboardTool {
+  return value === "pen" || value === "pencil" || value === "marker" || value === "eraser" || value === "text" || value === "select" || value === "hand";
 }
 
 function normalizeItem(item: WhiteboardItem, fallbackLayerId: string): WhiteboardItem | null {
@@ -169,6 +199,8 @@ function migrateNodeBoard(
       x: typeof viewport?.x === "number" ? viewport.x : 0,
       y: typeof viewport?.y === "number" ? viewport.y : 0,
       zoom: typeof viewport?.zoom === "number" ? viewport.zoom : 1
-    }
+    },
+    ui: createDefaultUiState(layer.id)
   };
 }
+
