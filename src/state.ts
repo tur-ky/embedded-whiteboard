@@ -10,7 +10,7 @@ import {
 export const WHITEBOARD_FENCE = "inline-whiteboard";
 export const DEFAULT_BOARD_HEIGHT = 620;
 export const DEFAULT_COLORS = [
-  "#111827",
+  "#111111",
   "#2563eb",
   "#14b8a6",
   "#22c55e",

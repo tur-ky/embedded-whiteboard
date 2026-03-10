@@ -65,6 +65,8 @@ export function mountWhiteboard(
   const viewport = workspace.createDiv({ cls: "embedded-whiteboard__viewport" });
   const grid = viewport.createDiv({ cls: "embedded-whiteboard__grid" });
   const scene = viewport.createEl("svg", { cls: "embedded-whiteboard__scene" });
+  scene.setAttribute("width", "100%");
+  scene.setAttribute("height", "100%");
   const strokeLayer = scene.createEl("g", { cls: "embedded-whiteboard__stroke-layer" });
   const draftLayer = scene.createEl("g", { cls: "embedded-whiteboard__draft-layer" });
   const draftPath = draftLayer.createEl("path", { cls: "embedded-whiteboard__draft-path" });
