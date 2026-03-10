@@ -45,6 +45,7 @@ export interface TextItem {
 export type WhiteboardItem = StrokeItem | TextItem;
 
 export interface EmbeddedWhiteboardData {
+  id: string;
   layers: WhiteboardLayer[];
   items: WhiteboardItem[];
   viewport: WhiteboardViewport;

@@ -41,6 +41,7 @@ export function createLayer(name = "Layer 1"): WhiteboardLayer {
 
 export function createDefaultBoard(): EmbeddedWhiteboardData {
   return {
+    id: createId("board"),
     layers: [createLayer()],
     items: [],
     viewport: {
@@ -57,7 +58,7 @@ export function parseBoard(raw: string): EmbeddedWhiteboardData {
   };
 
   if (Array.isArray(parsed.nodes)) {
-    return migrateNodeBoard(parsed.nodes, parsed.viewport);
+    return migrateNodeBoard(parsed.nodes, parsed.viewport, parsed.id);
   }
 
   const layers = Array.isArray(parsed.layers)
@@ -82,6 +83,7 @@ export function parseBoard(raw: string): EmbeddedWhiteboardData {
     : [];
 
   return {
+    id: typeof parsed.id === "string" ? parsed.id : createId("board"),
     layers: safeLayers,
     items,
     viewport: {
@@ -142,7 +144,8 @@ function normalizeItem(item: WhiteboardItem, fallbackLayerId: string): Whiteboar
 
 function migrateNodeBoard(
   nodes: Array<Record<string, unknown>>,
-  viewport: Partial<EmbeddedWhiteboardData["viewport"]> | undefined
+  viewport: Partial<EmbeddedWhiteboardData["viewport"]> | undefined,
+  boardId: string | undefined
 ): EmbeddedWhiteboardData {
   const layer = createLayer();
   const items: TextItem[] = nodes
@@ -159,6 +162,7 @@ function migrateNodeBoard(
     }));
 
   return {
+    id: typeof boardId === "string" ? boardId : createId("board"),
     layers: [layer],
     items,
     viewport: {

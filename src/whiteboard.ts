@@ -375,7 +375,9 @@ export function mountWhiteboard(
 
   function cleanupTextEditor(): void {
     if (activeTextEditor) {
-      activeTextEditor.remove();
+      if (activeTextEditor.isConnected) {
+        activeTextEditor.remove();
+      }
       activeTextEditor = null;
     }
   }
@@ -791,3 +793,5 @@ function distanceToSegment(
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
+
+
