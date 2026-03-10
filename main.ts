@@ -65,9 +65,8 @@ export default class EmbeddedWhiteboardPlugin extends Plugin {
       this.app.workspace.on("editor-menu", (menu, editor) => {
         menu.addItem((item) => {
           item
-            .setTitle("Embedded whiteboard")
+            .setTitle("Insert embedded whiteboard")
             .setIcon("layout-dashboard")
-            .setSection("insert")
             .onClick(() => {
               this.insertEmbeddedWhiteboard(editor);
             });
